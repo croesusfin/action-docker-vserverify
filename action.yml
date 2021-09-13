@@ -1,0 +1,30 @@
+name: "Docker Build Common Action"
+
+description: "This action wraps up the "
+
+inputs:
+  gh_token:
+    description: "The GitHub Token, value of `secrets.GITHUB_TOKEN` in the calling workflow"
+    required: true
+  img_name:
+    description: "The image name to VServerify"
+    required: true
+  registry:
+    description: "The registry name"
+    default: "ghcr.io/croesusfin/"
+    required: false
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Docker Login
+      uses: docker/login-action@v1
+      with:
+        username: ${{ github.repository_owner }}
+        password: ${{ inputs.gh_token }}
+        registry: ghcr.io
+
+    - name: Docker Export
+      run: |
+        docker export --output="refPatate.tar" ${{ inputs.registry }}${{ inputs.img_name }}
