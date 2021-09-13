@@ -9,6 +9,9 @@ inputs:
   img_name:
     description: "The image name to VServerify"
     required: true
+  img_tag:
+    description: "Tag of the image to VServerify"
+    required: true
   registry:
     description: "The registry name"
     default: "ghcr.io/croesusfin/"
@@ -27,4 +30,4 @@ runs:
 
     - name: Docker Export
       run: |
-        docker export --output="refPatate.tar" ${{ inputs.registry }}${{ inputs.img_name }}
+        docker export --output="refPatate.tar" ${{ inputs.registry }}${{ inputs.img_name }}:${{ inputs.img_tag }}
