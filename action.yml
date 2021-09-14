@@ -29,5 +29,6 @@ runs:
         registry: ghcr.io
 
     - name: Docker Export
+      shell: bash
       run: |
         docker export --output="refPatate.tar" ${{ inputs.registry }}${{ inputs.img_name }}:${{ inputs.img_tag }}
