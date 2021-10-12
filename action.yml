@@ -1,6 +1,6 @@
-name: "Docker Build Common Action"
+name: "Docker VServerify Common Action"
 
-description: "This action wraps up the "
+description: "This action wraps up the VServerification process from a Docker Image"
 
 inputs:
   gh_token:
@@ -24,11 +24,32 @@ runs:
     - name: Docker Login
       uses: docker/login-action@v1
       with:
-        username: ${{ github.repository_owner }}
+        username: ${{ github.actor }}
         password: ${{ inputs.gh_token }}
         registry: ghcr.io
 
-    - name: Docker Export
+    - name: Docker Pull, Run & Export
       shell: bash
       run: |
-        docker export --output="refPatate.tar" ${{ inputs.registry }}${{ inputs.img_name }}:${{ inputs.img_tag }}
+        img_name_tag="ghcr.io/croesusfin/${{ github.event.inputs.img_name }}:${{ github.event.inputs.img_tag }}"
+        img_name_dot="${{ github.event.inputs.img_name }}-${{ github.event.inputs.img_tag }}"
+        img_tar_file="${img_name_dot//./-}.tar.gz"
+        img_run_name="img-${img_name_dot//./-}"
+        echo "Image Run Name : ${img_run_name}"
+        mkdir -p export
+        docker pull ${img_name_tag}
+        docker kill ${img_run_name} >/dev/null 2>&1 || true
+        docker rm ${img_run_name} >/dev/null 2>&1 || true
+        docker run --name ${img_run_name} ${img_name_tag} /bin/true
+        docker kill ${img_run_name} >/dev/null 2>&1 || true
+        docker export ${img_run_name} | gzip > export/${img_tar_file}
+        docker rm ${img_run_name} >/dev/null 2>&1 || true
+
+    - name: Transfer to qaref
+      shell: bash
+      run: |
+        img_name_dot="${{ github.event.inputs.img_name }}-${{ github.event.inputs.img_tag }}"
+        img_tar_file="${img_name_dot//./-}.tar.gz"
+        echo "Image Tar Name : ${img_tar_file}"
+        scp export/${img_tar_file} qaref:/home/livraison/upload/
+        ssh qaref "sudo /home/livraison/untarvref ${img_tar_file}"
