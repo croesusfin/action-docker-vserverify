@@ -35,15 +35,15 @@ runs:
     - name: Set image variables
       shell: bash
       run: |
-        export img_name_tag="ghcr.io/croesusfin/${{ inputs.img_name }}:${{ inputs.img_tag }}"
-        export img_name_dot="${{ inputs.img_name }}-${{ inputs.img_tag }}"
-        export img_tar_file="${img_name_dot//./-}.tar.gz"
-        export img_run_name="img-${img_name_dot//./-}" 
+        img_name_tag="ghcr.io/croesusfin/${{ inputs.img_name }}:${{ inputs.img_tag }}"
+        img_name_dot="${{ inputs.img_name }}-${{ inputs.img_tag }}"
+        img_tar_file="${img_name_dot//./-}.tar.gz"
+        img_run_name="img-${img_name_dot//./-}" 
 
-        echo "::set-env name=img_name_tag::$img_name_tag"
-        echo "::set-env name=img_name_dot::$img_name_dot"
-        echo "::set-env name=img_tar_file::$img_tar_file"
-        echo "::set-env name=img_run_name::$img_run_name"
+        echo "img_name_tag=$img_name_tag" >> $GITHUB_ENV
+        echo "img_name_dot=$img_name_dot" >> $GITHUB_ENV
+        echo "img_tar_file=$img_tar_file" >> $GITHUB_ENV
+        echo "img_run_name=$img_run_name" >> $GITHUB_ENV
 
     - name: Docker Export & Transfer to QAref
       shell: bash
