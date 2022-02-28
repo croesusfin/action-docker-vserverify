@@ -66,4 +66,5 @@ runs:
         img_name_dot="${{ inputs.img_name }}-${{ inputs.img_tag }}"
         img_tar_file="${img_name_dot//./-}.tar.gz"
         echo "Image Tar Name : ${img_tar_file}"
-        scp export/${img_tar_file} qaref:/vref/
+        scp export/${img_tar_file} qaref:/home/livraison/upload/
+        ssh qaref "sudo /home/livraison/movetemplate ${img_tar_file}"
