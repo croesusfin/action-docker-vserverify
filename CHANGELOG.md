@@ -1,5 +1,12 @@
 # Changelogs
 
+## [1.1.0](https://github.com/croesusfin/action-docker-vserverify/compare/v1.0.0...v1.1.0) (2023-02-27)
+
+
+### Features
+
+* add overwrite template for auto-build ([#6](https://croesus-support.atlassian.net/browse/6)) ([e267a72](https://github.com/croesusfin/action-docker-vserverify/commit/e267a7225e170307641682af3fd2063e01cd444a))
+
 ## [1.0.0](https://github.com/croesusfin/action-docker-vserverify/compare/v0.3.0...v1.0.0) (2023-02-24)
 
 
