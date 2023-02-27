@@ -1,5 +1,12 @@
 # Changelogs
 
+## [1.2.0](https://github.com/croesusfin/action-docker-vserverify/compare/v1.1.0...v1.2.0) (2023-02-27)
+
+
+### Features
+
+* add vref_name input ([#8](https://croesus-support.atlassian.net/browse/8)) ([9726557](https://github.com/croesusfin/action-docker-vserverify/commit/9726557217854bfa4e23c2944c1c6c97b10809d6))
+
 ## [1.1.0](https://github.com/croesusfin/action-docker-vserverify/compare/v1.0.0...v1.1.0) (2023-02-27)
 
 
