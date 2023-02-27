@@ -16,6 +16,10 @@ inputs:
     description: "Type of conversion, either 'vserver' or 'template'"
     default: "vserver"
     required: true
+  overwrite_template:
+      description: "Overwrite current template, used in auto-build"
+      default: "false"
+      required: false
   registry:
     description: "The registry name"
     default: "ghcr.io/croesusfin/"
@@ -60,13 +64,9 @@ runs:
     - name: Untar reference on QAref
       if: ${{ inputs.conversion_type == 'vserver' }}
       shell: bash
-      run: |
-        echo "sudo /home/livraison/untarvref ${img_tar_file}"
-        ssh qaref "sudo /home/livraison/untarvref ${img_tar_file}"
+      run: ssh qaref "sudo /home/livraison/untarvref ${img_tar_file}"
 
     - name: Move template on QAref
       if: ${{ inputs.conversion_type == 'template' }}
       shell: bash
-      run: |
-        echo "sudo /home/livraison/movetemplate ${img_tar_file}"
-        ssh qaref "sudo /home/livraison/movetemplate ${img_tar_file}"
+      run: ssh qaref "sudo /home/livraison/movetemplate ${img_tar_file} ${{ inputs.overwrite_template }}"

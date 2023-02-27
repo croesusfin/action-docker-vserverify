@@ -1,0 +1,28 @@
+#!/bin/bash
+
+## This script is intented to be run from qaref:/home/livraison as root
+## root is required to write in /vref/
+
+TEMPLATE_TAR_FILE=$1
+OVERWRITE_EXISTING=$2
+
+TEMPLATE_UPLOAD_PATH=/home/livraison/upload/${TEMPLATE_TAR_FILE}
+TEMPLATE_DEST_PATH=/vref/${TEMPLATE_TAR_FILE}
+TEMPLATE_DEST_PREV=${TEMPLATE_DEST_PATH}.$(date +%F)
+
+if [ ! -f ${TEMPLATE_UPLOAD_PATH} ]; then
+    echo "Unable to find '${TEMPLATE_UPLOAD_PATH}'. Exiting..."
+    exit 1
+fi
+
+if [[ "${OVERWRITE_EXISTING}" == "true" ]]; then
+    echo "Overwriting '${TEMPLATE_TAR_FILE}' in '/vref'..."
+    mv -v ${TEMPLATE_DEST_PATH} ${TEMPLATE_DEST_PREV} && \
+        mv -v ${TEMPLATE_UPLOAD_PATH} ${TEMPLATE_DEST_PATH}
+elif [ -f ${TEMPLATE_DEST_PATH} ]; then
+    echo "Template '${TEMPLATE_DEST_PATH}' already exists. Exiting..."
+    exit 1
+else
+    echo "Moving '${TEMPLATE_TAR_FILE}' to '/vref'..."
+    mv -v ${TEMPLATE_UPLOAD_PATH} ${TEMPLATE_DEST_PATH}
+fi
