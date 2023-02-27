@@ -24,6 +24,9 @@ inputs:
     description: "The registry name"
     default: "ghcr.io/croesusfin/"
     required: false
+  vref_name:
+    description: "The name we want to give to the vserver"
+    required: false
 
 
 runs:
@@ -40,7 +43,13 @@ runs:
       shell: bash
       run: |
         img_name_dot="${{ inputs.img_name }}-${{ inputs.img_tag }}"
-        img_tar_file="${img_name_dot//./-}.tar.gz"
+        if [ -z ${{ inputs.vref_name }} ]
+        then
+          img_tar_file="${img_name_dot//./-}.tar.gz"
+        else
+          img_tar_file="${{ inputs.vref_name }}.tar.gz"
+        fi
+        echo "Tar filename : $img_tar_file"
 
         echo "img_name_dot=$img_name_dot" >> $GITHUB_ENV
         echo "img_tar_file=$img_tar_file" >> $GITHUB_ENV
