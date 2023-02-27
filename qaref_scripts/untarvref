@@ -1,0 +1,42 @@
+#!/bin/bash
+
+## This script is intented to be run from qaref:/home/livraison as root
+## root is required to write in /vref/ and properly untar with the right permissions
+
+IMG_TAR_FILE=$1
+
+IMG_TAR_NAME=${IMG_TAR_FILE%%.*}
+IMG_FULL_PATH=/home/livraison/upload/${IMG_TAR_FILE}
+echo "Source TAR : ${IMG_FULL_PATH}"
+if [ ! -f ${IMG_FULL_PATH} ]; then
+  echo "Unable to find '${IMG_FULL_PATH}'. Exiting..."
+  exit 1
+fi
+
+#IMG_UP_NAME=$(echo $IMG_TAR_NAME | sed 's/./\U&/')
+REF_NAME="ref${IMG_TAR_NAME}"
+REF_FULL_PATH=/vref/${REF_NAME}
+echo "Destination Folder : ${REF_FULL_PATH}"
+if [ -d ${REF_FULL_PATH} ]; then
+  echo "Ref '${REF_FULL_PATH}' already exists. Exiting..."
+  exit 1
+fi
+
+echo "Extracting to Vref..."
+mkdir -p ${REF_FULL_PATH}
+tar -xzf ${IMG_FULL_PATH} -C ${REF_FULL_PATH}
+
+echo "Cleaning Docker files..."
+rm -f ${REF_FULL_PATH}/.dockerenv
+
+echo "Setting up VServerify call..."
+if [ -f ${REF_FULL_PATH}/etc/vserver/vserverify.sh ]; then
+  mkdir -p ${REF_FULL_PATH}/etc/assemble.d/
+  mv ${REF_FULL_PATH}/etc/vserver/vserverify.sh ${REF_FULL_PATH}/etc/assemble.d/0_vserverify.sh
+  chmod +x ${REF_FULL_PATH}/etc/assemble.d/0_vserverify.sh
+else
+  echo " No 'vserverify.sh' file found, skipping..."
+fi
+
+echo "Cleaning image archive..."
+rm -f ${IMG_FULL_PATH}
